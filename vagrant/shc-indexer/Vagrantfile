@@ -12,6 +12,11 @@ SPLUNK_PASS  = "changeme1"
 SPLUNK_HOME  = "/opt/splunk"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.provider "virtualbox" do |vb|
+      vb.customize [
+        "modifyvm", :id, "--uartmode1", "disconnected"
+      ]
+    end
 
     config.vm.define "indexer" do |indexer|
         config.vm.box = "ubuntu/bionic64"

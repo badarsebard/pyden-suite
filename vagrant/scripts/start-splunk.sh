@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sudo ntpdate ntp.ubuntu.com
 status=`sudo -u splunk ${SPLUNK_BIN} status`
 
 echo "Splunk status is: $status"
