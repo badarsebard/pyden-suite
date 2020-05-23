@@ -2,8 +2,8 @@
 
 set -x
 
-wget -q -O splunk.deb 'https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.3.2&product=splunk&filename=splunk-7.3.2-c60db69f8e32-linux-2.6-amd64.deb&wget=true'
-sudo dpkg -i splunk.deb
+wget -O splunk-7.3.5-86fd62efc3d7-linux-2.6-amd64.deb 'https://www.splunk.com/page/download_track?file=7.3.5/linux/splunk-7.3.5-86fd62efc3d7-linux-2.6-amd64.deb&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=7.3.5&product=splunk&typed=release'
+sudo dpkg -i /vagrant/splunk-7.3.5-86fd62efc3d7-linux-2.6-amd64.deb
 
 sudo timedatectl set-timezone America/New_York
 sudo -u splunk cp /home/vagrant/.bashrc ${SPLUNK_HOME}/.bashrc

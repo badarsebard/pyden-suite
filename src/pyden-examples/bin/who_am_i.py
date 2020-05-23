@@ -3,7 +3,7 @@
 
 # or if you require a different environment from the default, use this
 from activate import activate_venv_or_die
-activate_venv_or_die('py2')
+activate_venv_or_die('py3')
 
 import sys
 import os
@@ -50,7 +50,10 @@ for line in csvr:
     results.append(result)
 
 for result in results:
-    result["message"] = "host:{} executable:{} version:{} cwd:{}".format(socket.gethostname(), sys.executable, sys.version, os.getcwd())
+    result['host'] = socket.gethostname()
+    result['executable'] = sys.executable
+    result['version'] = sys.version
+    result['cwd'] = os.getcwd()
     try:
         import splunklib
     except ImportError:

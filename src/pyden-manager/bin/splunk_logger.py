@@ -3,6 +3,9 @@ import logging
 import logging.handlers
 
 
+loggers = {}
+
+
 # The following two functions are taken from the `splunk` module written into Splunk Enterprise
 # These are necessary to set up logging in accordance with Splunk defined best practice but the module is
 # lost when the process is re-executed under a different Python interpreter.
@@ -82,17 +85,23 @@ def setupSplunkLogger(baseLogger, defaultConfigFile, localConfigFile, loggingSta
 
 
 def setup_logging():
-    logger = logging.getLogger('splunk.pyden')
-    splunk_home = os.environ['SPLUNK_HOME']
-    logging_default_config_file = os.path.join(splunk_home, 'etc', 'log.cfg')
-    logging_local_config_file = os.path.join(splunk_home, 'etc', 'log-local.cfg')
-    logging_stanza_name = 'python'
-    logging_file_name = "pyden.log"
-    base_log_path = os.path.join('var', 'log', 'splunk')
-    logging_format = "%(asctime)s %(levelname)-s\t%(module)s:%(lineno)d - %(message)s"
-    splunk_log_handler = logging.handlers.RotatingFileHandler(
-        os.path.join(splunk_home, base_log_path, logging_file_name), mode='a')
-    splunk_log_handler.setFormatter(logging.Formatter(logging_format))
-    logger.addHandler(splunk_log_handler)
-    setupSplunkLogger(logger, logging_default_config_file, logging_local_config_file, logging_stanza_name)
-    return logger
+    global loggers
+
+    if loggers.get('splunk.pyden'):
+        return loggers.get('splunk.pyden')
+    else:
+        logger = logging.getLogger('splunk.pyden')
+        splunk_home = os.environ['SPLUNK_HOME']
+        logging_default_config_file = os.path.join(splunk_home, 'etc', 'log.cfg')
+        logging_local_config_file = os.path.join(splunk_home, 'etc', 'log-local.cfg')
+        logging_stanza_name = 'python'
+        logging_file_name = "pyden.log"
+        base_log_path = os.path.join('var', 'log', 'splunk')
+        logging_format = "%(asctime)s %(levelname)-s\t%(module)s:%(lineno)d - %(message)s"
+        splunk_log_handler = logging.handlers.RotatingFileHandler(
+            os.path.join(splunk_home, base_log_path, logging_file_name), mode='a')
+        splunk_log_handler.setFormatter(logging.Formatter(logging_format))
+        logger.addHandler(splunk_log_handler)
+        setupSplunkLogger(logger, logging_default_config_file, logging_local_config_file, logging_stanza_name)
+        loggers['splunk.pyden'] = logger
+        return logger
