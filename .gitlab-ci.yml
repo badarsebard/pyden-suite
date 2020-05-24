@@ -1,8 +1,30 @@
 image: python:2.7
 
 stages:
-    - test
-    - deploy
+  - build
+  - test
+  - deploy
+
+harness:
+  stage: build
+  before_script:
+    - docker info
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest .
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
+  only:
+    changes:
+      - scripts/packages.sh
+      - scripts/selenium.sh
+      - Dockerfile
+      - .gitlab-ci.yml
+
+selenium:
+  stage: test
+  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
+  script:
+    - python3 test.py
 
 appinspect:
   stage: test
@@ -25,13 +47,16 @@ appinspect:
       - pyden-manager.html
       - pyden.tgz
       - pyden-manager.tgz
-  tags:
-    - docker
+  only:
+    - tags
+    - master
 
 splunkbase:
   stage: deploy
+  variables:
+    SUPPORTED_VERSIONS: "7.2,7.3"
   script:
-    - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4322/new_release/ -F "files[]=@pyden.tgz" -F "filename=pyden.tgz" -F "splunk_versions=7.2" -F "visibility=true"
-    - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4323/new_release/ -F "files[]=@pyden-manager.tgz" -F "filename=pyden-manager.tgz" -F "splunk_versions=7.2" -F "visibility=true"
+    - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4322/new_release/ -F "files[]=@pyden.tgz" -F "filename=pyden.tgz" -F "splunk_versions=${SUPPORTED_VERSIONS}" -F "visibility=true"
+    - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4323/new_release/ -F "files[]=@pyden-manager.tgz" -F "filename=pyden-manager.tgz" -F "splunk_versions=${SUPPORTED_VERSIONS}" -F "visibility=true"
   only:
     - tags
