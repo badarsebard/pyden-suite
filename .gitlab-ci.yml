@@ -5,6 +5,9 @@ stages:
 
 harness:
   stage: build
+  image: docker
+  services:
+    - docker:dind
   before_script:
     - docker info
   script:
@@ -26,6 +29,7 @@ selenium:
 
 appinspect:
   stage: test
+  image: python
   script:
     # first two lines are needed because when gitlab clones the repo it does so with a different set of permissions
     - find src -type d -exec chmod 0755 {} +
@@ -51,6 +55,7 @@ appinspect:
 
 splunkbase:
   stage: deploy
+  image: pyhton
   variables:
     SUPPORTED_VERSIONS: "7.2,7.3"
   script:
