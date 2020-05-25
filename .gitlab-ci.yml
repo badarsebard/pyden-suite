@@ -19,7 +19,8 @@ harness:
       - scripts/splunk_docker_prep.sh
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
-      # - .gitlab-ci.yml
+      - .gitlab-ci.yml
+      - test/*
 
 selenium:
   stage: test
