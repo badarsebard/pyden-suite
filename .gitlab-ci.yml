@@ -8,22 +8,27 @@ harness:
   image: docker
   services:
     - docker:dind
-  before_script:
-    - docker info
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest .
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest -f selenium.dockerfile
     - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest -f splunk.dockerfile
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
   only:
     changes:
-      - scripts/packages.sh
-      - scripts/selenium.sh
-      - Dockerfile
+      - scripts/splunk_docker_prep.sh
+      - scripts/selenium_docker_prep.sh
+      - selenium.dockerfile
       - .gitlab-ci.yml
 
 selenium:
   stage: test
   image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
+  services:
+    - $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+  variables:
+    SPLUNK_PASSWORD: "changeme1"
+    SPLUNK_START_ARGS: "--accept-license"
   script:
     - python3 test.py
 

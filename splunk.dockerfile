@@ -3,9 +3,7 @@ FROM splunk/splunk:7.3
 COPY src/pyden /opt/splunk/etc/apps/pyden
 COPY src/pyden-manager /opt/splunk/etc/apps/pyden-manager
 COPY src/pyden-examples /opt/splunk/etc/apps/pyden-examples
-COPY scripts/packages.sh ./packages.sh
-COPY scripts/selenium.sh ./selenium.sh
-COPY test/test.py ./test.py
+COPY scripts/splunk_docker_prep.sh ./splunk_docker_prep.sh
 
-RUN ./packages.sh
-RUN ./selenium.sh
+RUN ./splunk_docker_prep.sh
+

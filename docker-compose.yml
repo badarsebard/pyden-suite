@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  splunk:
+    build:
+      context: .
+      dockerfile: splunk.dockerfile
+    image: pyden-splunk
+    container_name: pyden-splunk-1
+    environment:
+      SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_PASSWORD: "changeme1"
+
+  selenium:
+    build:
+      context: .
+      dockerfile: selenium.dockerfile
+    image: pyden-selenium
+    container_name: pyden-selenium-1
+    entrypoint: ["python3", "test.py"]
