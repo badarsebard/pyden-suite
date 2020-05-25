@@ -9,7 +9,7 @@ harness:
   services:
     - docker:dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER -password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest -f selenium.dockerfile .
     - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
     - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest -f splunk.dockerfile .
