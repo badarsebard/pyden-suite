@@ -1,30 +1,43 @@
 stages:
   - build
   - test
+  - package
   - deploy
 
-harness:
+build_pyden_splunk:
   stage: build
   image: docker
   services:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest -f selenium.dockerfile .
-    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
     - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest -f splunk.dockerfile .
     - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
   only:
     changes:
       - scripts/splunk_docker_prep.sh
+      - splunk.dockerfile
+      - .gitlab-ci.yml
+
+build_pyden_selenium:
+  stage: build
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest -f selenium.dockerfile .
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
+  only:
+    changes:
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
       - .gitlab-ci.yml
       - test/*
 
-selenium:
+execute_test_suite:
   stage: test
-  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
+  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
   services:
     - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
       alias: pyden-splunk
@@ -35,7 +48,7 @@ selenium:
     - python3 /test.py
 
 appinspect:
-  stage: test
+  stage: package
   image: python
   script:
     # first two lines are needed because when gitlab clones the repo it does so with a different set of permissions

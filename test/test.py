@@ -9,8 +9,9 @@ i, waiting = 0, True
 while waiting:
     r = requests.get("http://pyden-splunk:8000")
     if r.ok:
+        print("Splunk is ready")
         waiting = False
-    if i < 120:
+    if i > 120:
         print("Splunk did not come up within 2 minutes")
         sys.exit(1)
     i += 1
