@@ -19,7 +19,7 @@ harness:
       - scripts/splunk_docker_prep.sh
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
-      - .gitlab-ci.yml
+      # - .gitlab-ci.yml
 
 selenium:
   stage: test
@@ -30,6 +30,7 @@ selenium:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
   script:
+    - pwd
     - python3 test.py
 
 appinspect:
