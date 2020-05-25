@@ -33,7 +33,6 @@ build_pyden_selenium:
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
       - .gitlab-ci.yml
-      - test/*
 
 execute_test_suite:
   stage: test
@@ -45,7 +44,8 @@ execute_test_suite:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
   script:
-    - python3 /test.py
+    - cd $CI_PROJECT_DIR
+    - python3 test.py
 
 appinspect:
   stage: package
