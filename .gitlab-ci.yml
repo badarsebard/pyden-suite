@@ -30,8 +30,7 @@ selenium:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
   script:
-    - pwd
-    - python3 test.py
+    - python3 /test.py
 
 appinspect:
   stage: test
