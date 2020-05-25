@@ -26,7 +26,8 @@ selenium:
   stage: test
   image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-harness:latest
   services:
-    - $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+    - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+      alias: pyden-splunk
   variables:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
