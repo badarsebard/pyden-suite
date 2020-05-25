@@ -17,7 +17,6 @@ build_pyden_splunk:
     changes:
       - scripts/splunk_docker_prep.sh
       - splunk.dockerfile
-      - .gitlab-ci.yml
 
 build_pyden_selenium:
   stage: build
@@ -32,7 +31,6 @@ build_pyden_selenium:
     changes:
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
-      - .gitlab-ci.yml
 
 execute_test_suite:
   stage: test
@@ -45,7 +43,7 @@ execute_test_suite:
     SPLUNK_START_ARGS: "--accept-license"
   script:
     - cd $CI_PROJECT_DIR
-    - python3 test.py
+    - python3 test/test.py
 
 appinspect:
   stage: package
