@@ -24,4 +24,4 @@ while waiting:
         time.sleep(1)
 
 print("Beginning automated tests")
-pytest.main(["/app/test/"])
+pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])

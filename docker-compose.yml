@@ -22,5 +22,7 @@ services:
     container_name: pyden-selenium-1
     entrypoint: ["python3", "/app/test/auto.py"]
     #entrypoint: ["tail", "-f", "/dev/null"]
+    environment:
+      CI_PROJECT_DIR: "/app"
     volumes:
     - ./:/app

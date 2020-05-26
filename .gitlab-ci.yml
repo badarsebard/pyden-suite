@@ -43,7 +43,7 @@ execute_test_suite:
     SPLUNK_START_ARGS: "--accept-license"
   script:
     - cd $CI_PROJECT_DIR
-    - python3 test/auto.py
+    - python3 $CI_PROJECT_DIR/test/auto.py
 
 appinspect:
   stage: package
