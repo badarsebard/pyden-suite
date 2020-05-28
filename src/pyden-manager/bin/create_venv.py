@@ -71,3 +71,6 @@ if __name__ == "__main__":
     venv_exec = os.path.join(venv_dir, name, 'bin', 'python')
     write_pyden_config(pyden_location, config, name, "executable", venv_exec.lstrip(os.environ['SPLUNK_HOME']))
     write_pyden_config(pyden_location, config, name, 'version', version)
+    outputfile = sys.stdout
+    sys.stdout.write("message\n")
+    sys.stdout.write("Successfully created virtual environment {} using Python {}\n".format(name, version))

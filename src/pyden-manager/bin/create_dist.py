@@ -166,6 +166,7 @@ def build_dist(version, download):
     write_pyden_config(pyden_location, config, version, "executable", py_exec.lstrip(os.environ['SPLUNK_HOME']))
     if not config.has_section("default-pys") or not config.has_option("default-pys", "distribution"):
         write_pyden_config(pyden_location, config, 'default-pys', 'distribution', version)
+    Intersplunk.outputResults([{"message": "Successfully compiled Python {}".format(version)}])
     return
 
 
