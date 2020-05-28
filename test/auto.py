@@ -24,4 +24,5 @@ while waiting:
         time.sleep(1)
 
 print("Beginning automated tests")
-pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
+code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
+sys.exit(code)

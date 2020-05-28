@@ -44,6 +44,9 @@ execute_test_suite:
   script:
     - cd $CI_PROJECT_DIR
     - python3 $CI_PROJECT_DIR/test/auto.py
+  artifacts:
+    paths:
+      - screenshots/
 
 appinspect:
   stage: package
