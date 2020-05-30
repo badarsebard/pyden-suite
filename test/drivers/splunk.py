@@ -6,18 +6,36 @@ import time
 
 
 def wait_until(browser: webdriver.Chrome, url: str):
-    WebDriverWait(browser, 10).until(expected_conditions.url_contains(url))
+    WebDriverWait(browser, 20).until(expected_conditions.url_contains(url))
 
 
 class TestFailure(Exception):
     pass
 
 
-class SplunkTest:
-    def __init__(self, browser: webdriver.Chrome):
-        self.browser = browser
+def _screenshot(func):
+    def wrapper(self, *args):
+        self.screenshot()
+        output = func(self, *args)
+        self.screenshot()
+        return output
+    return wrapper
 
+
+class SplunkTest:
+    def __init__(self, browser: webdriver.Chrome, pic_name: str):
+        self.browser = browser
+        self.count = 0
+        self.pic_name = pic_name
+
+    def screenshot(self):
+        self.browser.save_screenshot(f"/app/screenshots/{self.pic_name}-{self.count}.png")
+        self.count += 1
+
+    @_screenshot
     def login(self):
+        if self.browser.get_cookie("splunkd_8000"):
+            return
         i = 0
         while not self.browser.get_cookie("splunkweb_uid"):
             self.browser.get("http://pyden-splunk:8000")
@@ -31,10 +49,12 @@ class SplunkTest:
         self.browser.find_element_by_class_name("splButton-primary").click()
         wait_until(self.browser, "/en-US/app/launcher/home")
 
+    @_screenshot
     def open_pyden_search(self):
         self.browser.get("http://pyden-splunk:8000/en-US/app/pyden-manager/search")
         wait_until(self.browser, "/en-US/app/pyden-manager/search")
 
+    @_screenshot
     def run_search(self, spl: str):
         search_bar = self.browser.find_element_by_class_name("ace_text-input")
         search_bar.send_keys(Keys.CONTROL, "a")
@@ -45,6 +65,3 @@ class SplunkTest:
         while "disabled" not in stop_button.get_attribute("class"):
             time.sleep(1)
         return self.browser.page_source
-
-    def screenshot(self, target):
-        self.browser.save_screenshot(f"/app/screenshots/{target}")

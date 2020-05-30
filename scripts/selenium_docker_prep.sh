@@ -7,7 +7,7 @@ echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" | te
 apt-get update
 apt-get -yq install libbz2-dev python3 python3-pip unzip xvfb libxi6 libgconf-2-4 google-chrome-stable
 
-pip3 install selenium requests pytest
+pip3 install -r requirements.txt
 
 wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip

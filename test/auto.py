@@ -6,6 +6,7 @@ import time
 
 
 print("Waiting for Splunk to be ready")
+time.sleep(45)
 i, waiting = 0, True
 while waiting:
     try:
@@ -24,5 +25,5 @@ while waiting:
         time.sleep(1)
 
 print("Beginning automated tests")
-code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
+code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test"), "--verbose"])
 sys.exit(code)

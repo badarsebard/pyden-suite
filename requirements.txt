@@ -1,3 +1,5 @@
 selenium
 requests
 pytest
+pytest-sugar
+pytest-xdist

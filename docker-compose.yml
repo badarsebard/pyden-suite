@@ -11,6 +11,7 @@ services:
     environment:
       SPLUNK_START_ARGS: "--accept-license"
       SPLUNK_PASSWORD: "changeme1"
+      SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
 
   selenium:
     build:
@@ -20,8 +21,8 @@ services:
       - "pyden-splunk"
     image: pyden-selenium
     container_name: pyden-selenium-1
-    entrypoint: ["python3", "/app/test/auto.py"]
-    #entrypoint: ["tail", "-f", "/dev/null"]
+    #entrypoint: ["/app/scripts/auto.sh"]
+    entrypoint: ["tail", "-f", "/dev/null"]
     environment:
       CI_PROJECT_DIR: "/app"
     volumes:

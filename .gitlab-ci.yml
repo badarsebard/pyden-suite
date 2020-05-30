@@ -41,6 +41,7 @@ execute_test_suite:
   variables:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
+    SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
   script:
     - cd $CI_PROJECT_DIR
     - python3 $CI_PROJECT_DIR/test/auto.py
