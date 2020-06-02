@@ -1,3 +1,4 @@
+import docker
 import os
 import pytest
 import requests
@@ -25,5 +26,5 @@ while waiting:
         time.sleep(1)
 
 print("Beginning automated tests")
-code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test"), "--verbose"])
+code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
 sys.exit(code)
