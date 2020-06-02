@@ -21,4 +21,17 @@ tee -a /opt/splunk/etc/system/local/telemetry.conf << 'EOF'
 optInVersionAcknowledged = 3
 showOptInModal = 0
 EOF
+mkdir -p /opt/splunk/etc/apps/pyden-manager/local/
+touch /opt/splunk/etc/apps/pyden-manager/local/app.conf
+chown splunk: /opt/splunk/etc/apps/pyden-manager/local/app.conf
+tee -a /opt/splunk/etc/apps/pyden-manager/local/app.conf << 'EOF'
+[install]
+is_configured = 1
+EOF
+touch /opt/splunk/etc/apps/pyden-manager/local/pyden.conf
+chown splunk: /opt/splunk/etc/apps/pyden-manager/local/pyden.conf
+tee -a /opt/splunk/etc/apps/pyden-manager/local/pyden.conf << 'EOF'
+[appsettings]
+EOF
+
 /opt/splunk/bin/splunk restart -f --answer-yes --accept-license
