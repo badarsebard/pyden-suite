@@ -16,6 +16,7 @@ build_pyden_splunk:
   only:
     changes:
       - scripts/splunk_docker_prep.sh
+      - scripts/splunk_local_config.sh
       - splunk.dockerfile
 
 build_pyden_selenium:
