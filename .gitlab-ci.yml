@@ -46,6 +46,7 @@ execute_test_suite:
     - cd $CI_PROJECT_DIR
     - python3 $CI_PROJECT_DIR/test/auto.py
   artifacts:
+    when: always
     paths:
       - screenshots/
 
