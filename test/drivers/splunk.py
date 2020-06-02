@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -29,7 +30,9 @@ class SplunkTest:
         self.pic_name = pic_name
 
     def screenshot(self):
-        self.browser.save_screenshot(f"/app/screenshots/{self.pic_name}-{self.count}.png")
+        full_pic_name = os.path.join(os.environ['CI_PROJECT_DIR'], "screenshots",
+                                     f"{self.pic_name}-{self.count}.png")
+        self.browser.save_screenshot(full_pic_name)
         self.count += 1
 
     @_screenshot
