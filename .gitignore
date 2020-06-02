@@ -10,3 +10,4 @@ python-logo.xcf
 *.
 screenshots/*
 !screenshots/.gitkeep
+__pycache__
