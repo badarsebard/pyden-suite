@@ -5,9 +5,12 @@ import sys
 import time
 
 
-print("Available containers")
+print("Setup client")
 client = docker.from_env()
-print([(c.id, c.name) for c in client.containers.list()])
+print("Available clients")
+my_containers = client.containers.list()
+print("Container IDs and Names")
+print([(c.id, c.name) for c in my_containers])
 print("Waiting for Splunk to be ready", end="")
 i, waiting = 0, True
 client = docker.APIClient()
