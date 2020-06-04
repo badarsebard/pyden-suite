@@ -44,6 +44,7 @@ execute_test_suite:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
     SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
+    DOCKER_HOST: tcp://docker:2375
   script:
     - docker info
     - cd $CI_PROJECT_DIR
