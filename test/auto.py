@@ -1,29 +1,29 @@
 import docker
 import os
 import pytest
-import requests
 import sys
 import time
 
 
-print("Waiting for Splunk to be ready")
-time.sleep(45)
+print("Available containers")
+client = docker.from_env()
+print([(c.id, c.name) for c in client.containers.list()])
+print("Waiting for Splunk to be ready", end="")
 i, waiting = 0, True
+client = docker.APIClient()
 while waiting:
-    try:
-        r = requests.get("http://pyden-splunk:8000")
-    except:
-        pass
+    status = client.inspect_container("pyden-splunk-1")['State']['Health']['Status']
+    if "healthy" in status:
+        print("\nSplunk is ready")
+        waiting = False
+        continue
     else:
-        if r.ok:
-            print("Splunk is ready")
-            waiting = False
-    finally:
-        if i > 120:
-            print("Splunk did not come up within 2 minutes")
-            sys.exit(1)
-        i += 1
-        time.sleep(1)
+        print(".", end="")
+    if i > 120:
+        print("\nSplunk did not come up within 2 minutes")
+        sys.exit(1)
+    i += 1
+    time.sleep(1)
 
 print("Beginning automated tests")
 code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])

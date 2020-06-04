@@ -39,6 +39,7 @@ execute_test_suite:
   services:
     - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
       alias: pyden-splunk
+    - name: docker:dind
   variables:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
