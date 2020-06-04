@@ -7,7 +7,7 @@ apt-get -yq install curl gnupg > /dev/null
 curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" | tee -a /etc/apt/sources.list.d/google-chrome.list
 apt-get update > /dev/null
-apt-get -yq install libbz2-dev python3 python3-pip unzip xvfb libxi6 libgconf-2-4 google-chrome-stable > /dev/null
+apt-get -yq install docker.io libbz2-dev python3 python3-pip unzip xvfb libxi6 libgconf-2-4 google-chrome-stable > /dev/null
 
 pip3 install -r requirements.txt > /dev/null
 
