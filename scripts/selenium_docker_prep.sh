@@ -17,4 +17,4 @@ mv chromedriver /usr/bin/chromedriver
 chown root:root /usr/bin/chromedriver
 chmod +x /usr/bin/chromedriver
 
-rm -rf ${CI_PROJECT_DIR}/screenshots/*
+rm -rf ${CI_PROJECT_DIR}/artifacts/

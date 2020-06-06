@@ -1,4 +1,5 @@
 from .drivers.splunk import TestFailure
+import os
 import pytest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -32,5 +33,8 @@ def browser():
     driver.find_element_by_id("password").send_keys("changeme1")
     driver.find_element_by_class_name("splButton-primary").click()
     WebDriverWait(driver, 20).until(expected_conditions.url_contains("/en-US/app/launcher/home"))
+    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts"))
+    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "screenshots"))
+    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "results"))
     yield driver
     driver.quit()

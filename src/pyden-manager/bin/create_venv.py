@@ -36,6 +36,7 @@ if __name__ == "__main__":
             logger.error("Incorrect argument provided")
             sys.exit(1)
     pm_config, config = load_pyden_config()
+    logger.info(config.sections())
     pyden_location = pm_config.get('appsettings', 'location')
     if 'name' not in args:
         logger.error("No name for the new environment was provided.")
