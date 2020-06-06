@@ -33,8 +33,10 @@ def browser():
     driver.find_element_by_id("password").send_keys("changeme1")
     driver.find_element_by_class_name("splButton-primary").click()
     WebDriverWait(driver, 20).until(expected_conditions.url_contains("/en-US/app/launcher/home"))
-    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts"))
-    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "screenshots"))
-    os.makedirs(os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "results"))
+    artifacts = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts")
+    if not os.path.isdir(artifacts):
+        os.makedirs(artifacts)
+        os.makedirs(os.path.join(artifacts, "screenshots"))
+        os.makedirs(os.path.join(artifacts, "results"))
     yield driver
     driver.quit()
