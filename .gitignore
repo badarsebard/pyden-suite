@@ -8,6 +8,6 @@ src/pyden-manager/bin/build/*
 !src/pyden-manager/bin/build/README
 python-logo.xcf
 *.pyc
-screenshots/*
-!screenshots/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
 __pycache__

@@ -49,7 +49,7 @@ execute_test_suite:
   artifacts:
     when: always
     paths:
-      - screenshots/
+      - artifacts/
 
 appinspect:
   stage: package

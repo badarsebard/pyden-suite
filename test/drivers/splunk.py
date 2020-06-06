@@ -8,28 +8,11 @@ import time
 
 
 def wait_until(browser: webdriver.Chrome, url: str):
-    WebDriverWait(browser, 20).until(expected_conditions.url_contains(url))
+    WebDriverWait(browser, 60).until(expected_conditions.url_contains(url))
 
 
 class TestFailure(Exception):
     pass
-
-
-class element_has_css_class(object):
-    """An expectation for checking that an element has a particular css class.
-    locator - used to find the element
-    returns the WebElement once it has the particular css class
-    """
-    def __init__(self, locator, css_class):
-        self.locator = locator
-        self.css_class = css_class
-
-    def __call__(self, driver):
-        element = driver.find_element(*self.locator)  # Finding the referenced element
-        if self.css_class in element.get_attribute("class"):
-            return element
-        else:
-            return False
 
 
 def _screenshot(func):
@@ -47,7 +30,7 @@ class SplunkTest:
         self.pic_name = pic_name
 
     def screenshot(self):
-        full_pic_name = os.path.join(os.environ['CI_PROJECT_DIR'], "screenshots",
+        full_pic_name = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "screenshots",
                                      f"{self.pic_name}-{self.count}.png")
         self.browser.save_screenshot(full_pic_name)
         self.count += 1
@@ -84,4 +67,8 @@ class SplunkTest:
         stop_button = self.browser.find_element_by_class_name("stop")
         while "disabled" not in stop_button.get_attribute("class"):
             time.sleep(1)
+        results_location = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "results",
+                                        f"{self.pic_name}-{self.count}.txt")
+        with open(results_location, "w") as f:
+            f.write(self.browser.page_source)
         return self.browser.page_source
