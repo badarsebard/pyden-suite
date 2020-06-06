@@ -1,4 +1,5 @@
 from .drivers import splunk
+import time
 
 
 def test_create_venv_success(browser):
@@ -11,6 +12,7 @@ def test_create_venv_success(browser):
 
 
 def test_create_venv_name_exists(browser):
+    time.sleep(60)
     splunk_test = splunk.SplunkTest(browser, "create_venv_name_exists")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| createvenv name=py-env-0 version=3.8.0")
