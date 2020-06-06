@@ -28,3 +28,4 @@ services:
     volumes:
     - ./:/app
     - /var/run/docker.sock:/var/run/docker.sock
+    - /dev/shm:/dev/shm
