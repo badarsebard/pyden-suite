@@ -48,7 +48,7 @@ def test_delete_dist_ui_success(browser):
     icon = browser.find_element_by_class_name("icon-minus-circle")
     icon.click()
     i = 0
-    while "icon-plus-circle" not in icon.get_attribute("class") and i < 300:
+    while "icon-plus-circle" not in icon.get_attribute("class") and i < 600:
         time.sleep(1)
         i += 1
-    assert i < 300
+    assert i < 600
