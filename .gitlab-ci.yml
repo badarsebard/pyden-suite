@@ -50,6 +50,8 @@ execute_test_suite:
     when: always
     paths:
       - artifacts/
+  tags:
+    - docker
 
 appinspect:
   stage: package
