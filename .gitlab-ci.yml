@@ -18,6 +18,8 @@ build_pyden_splunk:
       - scripts/splunk_docker_prep.sh
       - scripts/splunk_local_config.sh
       - splunk.dockerfile
+  tags:
+    - docker
 
 build_pyden_selenium:
   stage: build
@@ -32,6 +34,8 @@ build_pyden_selenium:
     changes:
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
+  tags:
+    - docker
 
 execute_test_suite:
   stage: test
@@ -77,6 +81,8 @@ appinspect:
   only:
     - tags
     - master
+  tags:
+    - docker
 
 splunkbase:
   stage: deploy
@@ -88,3 +94,5 @@ splunkbase:
     - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4323/new_release/ -F "files[]=@pyden-manager.tgz" -F "filename=pyden-manager.tgz" -F "splunk_versions=${SUPPORTED_VERSIONS}" -F "visibility=true"
   only:
     - tags
+  tags:
+    - docker
