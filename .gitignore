@@ -7,7 +7,8 @@ src/*/metadata/local.meta
 src/pyden-manager/bin/build/*
 !src/pyden-manager/bin/build/README
 python-logo.xcf
-*.
-screenshots/*
-!screenshots/.gitkeep
+*.pyc
+/artifacts/**
+!/artifacts/**/
+!/artifacts/**/.gitkeep
 __pycache__

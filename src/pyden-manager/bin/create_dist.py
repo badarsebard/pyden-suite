@@ -62,17 +62,18 @@ def build_dist(version, download):
     if os.path.isdir(build_file[:-4]):
         shutil.rmtree(build_file[:-4], ignore_errors=True)
     os.chdir(build_path)
-    list_before_extraction = os.listdir(os.getcwd())
+    # this was some dumb code
+    # list_before_extraction = os.listdir(os.getcwd())
     logger.debug("Extracting archive")
     with tarfile.open(build_file, "r:gz") as tarball:
-        tarball.extractall()
-    list_after_extraction = os.listdir(os.getcwd())
-    extracted_members = [member for member in list_after_extraction if member not in list_before_extraction]
-    if len(extracted_members) == 1:
+        extracted_members = tarball.getnames()
+        for extracted_member in extracted_members:
+            if extracted_members[0] not in extracted_member:
+                Intersplunk.generateErrorResults(
+                    "Archive contained more than one item. Please use archive with single member.")
+                sys.exit(1)
         extracted_member = extracted_members[0]
-    else:
-        Intersplunk.generateErrorResults("Archive contained more than one item. Please use archive with single member.")
-        sys.exit(1)
+        tarball.extractall()
 
     # configure and build
     pyden_prefix = os.path.join(pyden_location, 'local', 'lib', 'dist', version)
@@ -163,6 +164,8 @@ def build_dist(version, download):
             logger.error(message)
     logger.info("Finished building Python %s. Distribution available at %s." % (version, pyden_prefix))
 
+    # reloading config at last second to avoid race conditions during parallel processing
+    pm_config, config = load_pyden_config()
     write_pyden_config(pyden_location, config, version, "executable", py_exec.lstrip(os.environ['SPLUNK_HOME']))
     if not config.has_section("default-pys") or not config.has_option("default-pys", "distribution"):
         write_pyden_config(pyden_location, config, 'default-pys', 'distribution', version)

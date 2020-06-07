@@ -22,6 +22,8 @@ def activate():
 
 
 if __name__ == "__main__":
+    outputfile = sys.stdout
+    sys.stdout.write("message\n")
     logger = setup_logging()
     args = dict()
     for arg in sys.argv[1:]:
@@ -34,6 +36,7 @@ if __name__ == "__main__":
             logger.error("Incorrect argument provided")
             sys.exit(1)
     pm_config, config = load_pyden_config()
+    logger.info(config.sections())
     pyden_location = pm_config.get('appsettings', 'location')
     if 'name' not in args:
         logger.error("No name for the new environment was provided.")
@@ -44,11 +47,17 @@ if __name__ == "__main__":
         if config.has_option("default-pys", "distribution"):
             version = config.get("default-pys", "distribution")
     name = args['name']
+    if name in config.sections():
+        logger.error("Virtual environment name {} already exists".format(name))
+        sys.stdout.write("Virtual environment name {} already exists".format(name))
+        sys.exit(1)
+
     if version in config.sections():
         py_exec = os.path.join(os.environ['SPLUNK_HOME'], config.get(version, 'executable'))
         activate()
     else:
         logger.error("Python version not found in pyden.conf.")
+        sys.stdout.write("Python version not found in pyden.conf")
         sys.exit(1)
     if not config.has_option("default-pys", "environment"):
         write_pyden_config(pyden_location, config, 'default-pys', 'environment', name)
@@ -71,6 +80,4 @@ if __name__ == "__main__":
     venv_exec = os.path.join(venv_dir, name, 'bin', 'python')
     write_pyden_config(pyden_location, config, name, "executable", venv_exec.lstrip(os.environ['SPLUNK_HOME']))
     write_pyden_config(pyden_location, config, name, 'version', version)
-    outputfile = sys.stdout
-    sys.stdout.write("message\n")
     sys.stdout.write("Successfully created virtual environment {} using Python {}\n".format(name, version))

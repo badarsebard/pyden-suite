@@ -1,5 +1,6 @@
 import os
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -7,7 +8,7 @@ import time
 
 
 def wait_until(browser: webdriver.Chrome, url: str):
-    WebDriverWait(browser, 20).until(expected_conditions.url_contains(url))
+    WebDriverWait(browser, 60).until(expected_conditions.url_contains(url))
 
 
 class TestFailure(Exception):
@@ -16,7 +17,6 @@ class TestFailure(Exception):
 
 def _screenshot(func):
     def wrapper(self, *args):
-        self.screenshot()
         output = func(self, *args)
         self.screenshot()
         return output
@@ -30,32 +30,32 @@ class SplunkTest:
         self.pic_name = pic_name
 
     def screenshot(self):
-        full_pic_name = os.path.join(os.environ['CI_PROJECT_DIR'], "screenshots",
+        full_pic_name = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "screenshots",
                                      f"{self.pic_name}-{self.count}.png")
         self.browser.save_screenshot(full_pic_name)
         self.count += 1
 
-    @_screenshot
-    def login(self):
-        if self.browser.get_cookie("splunkd_8000"):
-            return
-        i = 0
-        while not self.browser.get_cookie("splunkweb_uid"):
-            self.browser.get("http://pyden-splunk:8000")
-            time.sleep(1)
-            if i > 120:
-                print("Problem loading login screen")
-                raise TestFailure
-            i += 1
-        self.browser.find_element_by_id("username").send_keys("admin")
-        self.browser.find_element_by_id("password").send_keys("changeme1")
-        self.browser.find_element_by_class_name("splButton-primary").click()
-        wait_until(self.browser, "/en-US/app/launcher/home")
+    def open_pyden(self, url):
+        self.browser.get(f"http://pyden-splunk:8000/en-US/app/pyden-manager/{url}")
+        wait_until(self.browser, f"/en-US/app/pyden-manager/{url}")
 
     @_screenshot
     def open_pyden_search(self):
-        self.browser.get("http://pyden-splunk:8000/en-US/app/pyden-manager/search")
-        wait_until(self.browser, "/en-US/app/pyden-manager/search")
+        self.open_pyden("search")
+
+    @_screenshot
+    def open_pyden_versions(self):
+        self.open_pyden("versions")
+        wait = WebDriverWait(self.browser, 30)
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "icon-plus-circle")))
+
+    @_screenshot
+    def open_pyden_environments(self):
+        self.open_pyden("virtual_environments")
+
+    @_screenshot
+    def open_pyden_pypi(self):
+        self.open_pyden("pypi_hub")
 
     @_screenshot
     def run_search(self, spl: str):
@@ -67,4 +67,8 @@ class SplunkTest:
         stop_button = self.browser.find_element_by_class_name("stop")
         while "disabled" not in stop_button.get_attribute("class"):
             time.sleep(1)
+        results_location = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "results",
+                                        f"{self.pic_name}-{self.count}.txt")
+        with open(results_location, "w") as f:
+            f.write(self.browser.page_source)
         return self.browser.page_source
