@@ -1,4 +1,5 @@
 docker
 pytest
 pytest-sugar
+pytest-xdist
 selenium

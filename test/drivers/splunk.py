@@ -47,11 +47,15 @@ class SplunkTest:
     def open_pyden_versions(self):
         self.open_pyden("versions")
         wait = WebDriverWait(self.browser, 30)
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "icon-plus-circle")))
+        wait.until(
+            expected_conditions.visibility_of_element_located((By.CLASS_NAME, "icon-plus-circle")))
 
     @_screenshot
     def open_pyden_environments(self):
         self.open_pyden("virtual_environments")
+        wait = WebDriverWait(self.browser, 30)
+        wait.until(
+            expected_conditions.visibility_of_element_located((By.CLASS_NAME, "icon-plus-circle")))
 
     @_screenshot
     def open_pyden_pypi(self):

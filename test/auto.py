@@ -23,9 +23,10 @@ if not ci:
             sys.exit(1)
         i += 1
         time.sleep(1)
-else:
-    time.sleep(60)
+# else:
+#     time.sleep(60)
 print("Beginning automated tests")
 os.chdir(os.environ['CI_PROJECT_DIR'])
-code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test"), "--verbose"])
+code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
+
 sys.exit(code)

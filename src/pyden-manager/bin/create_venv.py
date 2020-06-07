@@ -40,6 +40,7 @@ if __name__ == "__main__":
     pyden_location = pm_config.get('appsettings', 'location')
     if 'name' not in args:
         logger.error("No name for the new environment was provided.")
+        sys.stdout.write("No name for the new environment was provided.")
         sys.exit(1)
     # get executable
     version = args.get('version')
