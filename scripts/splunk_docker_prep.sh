@@ -11,4 +11,4 @@ sudo tee -a /etc/rsyncd.conf << 'EOF'
 path = /builds
 read only = false
 EOF
-sudo lsyncd -rsync /opt/splunk/var/log/splunk splunklogs
+sudo rsync --daemon

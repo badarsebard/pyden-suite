@@ -34,6 +34,5 @@ tee -a /opt/splunk/etc/apps/pyden-manager/local/pyden.conf << 'EOF'
 [appsettings]
 EOF
 
-ln /opt/splunk/var/log/splunk /builds/splunk-logs
-
 /opt/splunk/bin/splunk restart -f --answer-yes --accept-license
+lsyncd -rsync /opt/splunk/var/log/splunk splunklogs
