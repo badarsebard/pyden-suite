@@ -1,4 +1,5 @@
 from .drivers import splunk
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time
 
@@ -29,7 +30,7 @@ def test_create_venv_name_exists(browser):
 def test_create_venv_version_not_exists(browser):
     splunk_test = splunk.SplunkTest(browser, "create_venv_version_not_exists")
     splunk_test.open_pyden_search()
-    results = splunk_test.run_search("| createvenv name=py-env-1 version=3.8.1")
+    results = splunk_test.run_search("| createvenv name=py-env-1 version=4.0")
     assert "Python version not found in pyden.conf" in results
 
 
@@ -69,20 +70,19 @@ def test_delete_venv_ui_success(browser):
             xpath = f'//*[@id="statistics"]/table/tbody/tr[{i+1}]/td[1]/i'
             button = browser.find_element_by_xpath(xpath)
             break
+        splunk_test.screenshot()
     if not button:
         print("Couldn't find correct button")
-    splunk_test.screenshot()
     button.click()
     splunk_test.screenshot()
     while "form.env_name" not in browser.current_url:
         time.sleep(1)
         splunk_test.screenshot()
     table = browser.find_element_by_id("statistics")
-    splunk_test.screenshot()
     while "Create new environment" not in table.text:
         time.sleep(1)
         splunk_test.screenshot()
-    print(table.text)
+    table = browser.find_element_by_id("statistics")
     splunk_test.screenshot()
     assert "py-env-1" not in table.text
 
@@ -99,3 +99,31 @@ def test_delete_venv_name_not_exist(browser):
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| pydelete py-env-0")
     assert "Version or environment py-env-0 not found in configuration" in results
+
+
+def test_view_venv_module_success(browser):
+    splunk_test = splunk.SplunkTest(browser, "add_venv_module_success")
+    splunk_test.open_pyden_search()
+    splunk_test.run_search("| createvenv name=py-env-2 version=3.8.0")
+    splunk_test.run_search("| pip environment=py-env-2 install requests")
+    splunk_test.open_pyden_environments()
+    environments = browser.find_elements_by_xpath('//*[@id="statistics"]/table/tbody/tr')
+    environment = None
+    for i, env in enumerate(environments):
+        if "py-env-2" in env.text:
+            xpath = f'//*[@id="statistics"]/table/tbody/tr[{i + 1}]/td[2]'
+            environment = browser.find_element_by_xpath(xpath)
+            break
+    if not environment:
+        print("Couldn't find correct environment")
+    environment.click()
+    splunk_test.screenshot()
+    progress = False
+    while not progress:
+        try:
+            progress = browser.find_elements_by_class_name("progress-animation")[1]
+        except IndexError:
+            progress = False
+    while "display: none" not in progress.get_attribute("style"):
+        time.sleep(1)
+    assert "requests" in browser.page_source
