@@ -49,7 +49,7 @@ execute_test_suite:
     SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
   script:
     - python3 $CI_PROJECT_DIR/test/auto.py
-    - tar -czf splunk-logs.tgz /builds/splunk-logs
+    - tar -czf splunklogs.tgz /builds/splunklogs
   artifacts:
     when: always
     paths:
