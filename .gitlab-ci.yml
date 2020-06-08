@@ -53,6 +53,7 @@ execute_test_suite:
     when: always
     paths:
       - artifacts/
+      - /builds/splunk-logs/
   tags:
     - docker
 
