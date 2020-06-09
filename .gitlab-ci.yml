@@ -37,7 +37,7 @@ build_pyden_selenium:
   tags:
     - docker
 
-execute_test_suite:
+execute_test_suite_python2:
   stage: test
   image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
   services:
@@ -47,10 +47,31 @@ execute_test_suite:
     SPLUNK_PASSWORD: "changeme1"
     SPLUNK_START_ARGS: "--accept-license"
     SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
+    SPLUNK_ANSIBLE_ENV: "SPLUNK_PY_VERSION=python2"
   script:
     - python3 $CI_PROJECT_DIR/test/auto.py
   artifacts:
-    when: always
+    when: on_failure
+    paths:
+      - artifacts/
+  tags:
+    - docker
+
+execute_test_suite_python3:
+  stage: test
+  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
+  services:
+    - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+      alias: pyden-splunk
+  variables:
+    SPLUNK_PASSWORD: "changeme1"
+    SPLUNK_START_ARGS: "--accept-license"
+    SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
+    SPLUNK_ANSIBLE_ENV: "SPLUNK_PY_VERSION=python3"
+  script:
+    - python3 $CI_PROJECT_DIR/test/auto.py
+  artifacts:
+    when: on_failure
     paths:
       - artifacts/
   tags:

@@ -7,8 +7,10 @@ import time
 def test_pypi_install_success(browser):
     splunk_test = splunk.SplunkTest(browser, "pypi_install_success")
     splunk_test.open_pyden_search()
-    splunk_test.run_search("| createdist version=3.8.2")
-    splunk_test.run_search("| createvenv name=pypi-env-0 version=3.8.2")
+    results = splunk_test.run_search("| createdist version=3.8.2")
+    assert "Successfully compiled Python 3.8.2" in results
+    results = splunk_test.run_search("| createvenv name=pypi-env-0 version=3.8.2")
+    assert "Successfully created virtual environment pypi-env-0 using Python 3.8.2" in results
     splunk_test.open_pyden_pypi()
     textbox = browser.find_element_by_xpath('//*[@id="input1"]/div/div/input')
     textbox.send_keys(Keys.CONTROL, "a")
@@ -43,7 +45,8 @@ def test_pypi_install_success(browser):
     install.click()
     splunk_test.screenshot()
     done = False
-    while not done:
+    i = 0
+    while not done and i < 60:
         try:
             done = browser.find_element_by_id("done_icon")
         except NoSuchElementException:

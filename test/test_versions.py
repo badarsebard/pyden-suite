@@ -52,3 +52,5 @@ def test_delete_dist_ui_success(browser):
         time.sleep(1)
         i += 1
     assert i < 600
+
+# TODO: add test for changing default version

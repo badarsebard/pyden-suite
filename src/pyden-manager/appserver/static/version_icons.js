@@ -51,17 +51,22 @@ require([
                 } else if (range === "red") {
                     search = "| pydelete " + i.parent().parent().children()[1].innerHTML;
                 }
-                $.post(location.origin + "/en-US/splunkd/__raw/servicesNS/nobody/pyden-manager/search/jobs", {'exec_mode': 'oneshot', 'search': search}, function () {
+                $.post(location.origin + "/en-US/splunkd/__raw/servicesNS/nobody/pyden-manager/search/jobs", {'exec_mode': 'oneshot', 'search': search}, function (data) {
+                    var serializer = new XMLSerializer()
+                    var dataString = serializer.serializeToString(data)
                     i.removeClass('icon-rotate');
                     i.removeClass('blue');
                     i.removeClass('spin');
                     var oldValue = invICONS[icon];
-                    var newValue = (oldValue + 1) % 2;
+                    var newValue = (dataString.includes("Successfully compiled Python") || dataString.includes("Successfully deleted")) ? (oldValue + 1) % 2 : oldValue;
                     icon = ICONS[newValue];
                     range = RANGE[newValue];
                     i.addClass('icon-' + icon);
                     i.addClass(range);
                     i.addClass('click');
+                    if (oldValue === newValue) {
+                        alert("Python failed to compile. Review pyden.log for errors.")
+                    }
                 })
             });
         }

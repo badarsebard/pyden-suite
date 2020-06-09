@@ -1,4 +1,4 @@
-FROM splunk/splunk:7.3
+FROM splunk/splunk:8.0-debian
 
 COPY scripts/splunk_docker_prep.sh ./splunk_docker_prep.sh
 RUN ./splunk_docker_prep.sh

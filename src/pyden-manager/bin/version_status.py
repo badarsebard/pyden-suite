@@ -1,7 +1,10 @@
 import csv
 import sys
 import os
-from ConfigParser import ConfigParser
+if sys.version < '3':
+    from ConfigParser import ConfigParser
+else:
+    from configparser import ConfigParser
 
 
 def main():

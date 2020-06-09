@@ -15,7 +15,7 @@ if 'PYDEN_CONFIG' in os.environ:
     proc_out = os.environ["PYDEN_CONFIG"]
 else:
     splunk_bin = os.path.join(os.environ['SPLUNK_HOME'], 'bin', 'splunk')
-    proc = subprocess.Popen([splunk_bin, 'btool', 'pyden', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen([splunk_bin, 'btool', 'pyden', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     proc_out, proc_err = proc.communicate()
 buf = StringIO(proc_out)
 pyden_config.readfp(buf)

@@ -1,8 +1,11 @@
 import sys
 import requests
-from HTMLParser import HTMLParser
 from splunk import Intersplunk
 from utils import get_proxies
+if sys.version < '3':
+    from HTMLParser import HTMLParser
+else:
+    from html.parser import HTMLParser
 
 
 class PyPIHTMLParser(HTMLParser):

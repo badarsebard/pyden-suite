@@ -1,5 +1,4 @@
 from .drivers import splunk
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time
 
@@ -127,3 +126,5 @@ def test_view_venv_module_success(browser):
     while "display: none" not in progress.get_attribute("style"):
         time.sleep(1)
     assert "requests" in browser.page_source
+
+# TODO: add test for changing default environment

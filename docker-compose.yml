@@ -12,6 +12,15 @@ services:
       SPLUNK_START_ARGS: "--accept-license"
       SPLUNK_PASSWORD: "changeme1"
       SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
+      SPLUNK_ANSIBLE_ENV: "${SPLUNK_ANSIBLE_ENV}"
+      SPLUNK_SERVICE_UID: 1000
+    volumes:
+      - ./src/pyden-manager:/opt/splunk/etc/apps/pyden-manager
+      - /opt/splunk/etc/apps/pyden-manager/local/
+      - ./src/pyden:/opt/splunk/etc/apps/pyden
+      - /opt/splunk/etc/apps/pyden/local
+      - ./src/pyden-examples:/opt/splunk/etc/apps/pyden-examples
+      - /opt/splunk/etc/apps/pyden-examples/local
 
   selenium:
     build:

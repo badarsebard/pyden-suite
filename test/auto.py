@@ -18,13 +18,12 @@ if not ci:
             continue
         else:
             print(".", end="")
-        if i > 120:
+        if i > 300:
             print("\nSplunk did not come up within 2 minutes")
             sys.exit(1)
         i += 1
         time.sleep(1)
-# else:
-#     time.sleep(60)
+
 print("Beginning automated tests")
 os.chdir(os.environ['CI_PROJECT_DIR'])
 code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])

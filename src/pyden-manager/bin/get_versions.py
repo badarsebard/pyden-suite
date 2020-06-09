@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # logger.debug(compatible_versions)
     # sometime there are only pre release or release candidates so we need to check each compatible version for release
     for version in compatible_versions:
-        url = download_url.rstrip() + "%s/" % version
+        url = download_url.rstrip().decode() + "{}/".format(version)
         logger.debug(url)
         r = requests.get(url, headers={'Cache-Control': 'no-cache'}, proxies=proxies)
         source_pattern = r"""<a href=\"(?P<link>.*)\">Python-%s.tgz""" % version.replace('.', '\\.')

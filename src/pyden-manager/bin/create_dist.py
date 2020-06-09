@@ -14,7 +14,7 @@ from utils import load_pyden_config, write_pyden_config, get_proxies
 
 def download_python(version, build_path):
     base_url = simpleRequest("/servicesNS/nobody/pyden-manager/properties/pyden/download/url",
-                             sessionKey=session_key)[1]
+                             sessionKey=session_key)[1].decode()
     try:
         dpr = requests.get(base_url + "{0}/".format(version), proxies=proxies)
     except Exception as ex:
@@ -22,7 +22,7 @@ def download_python(version, build_path):
         sys.exit(1)
     else:
         if dpr.status_code in range(200, 300):
-            python_link = [link for link in re.findall("href=\"(.*?)\"", dpr.content) if link.endswith('tgz')][0]
+            python_link = [link for link in re.findall("href=\"(.*?)\"", dpr.content.decode()) if link.endswith('tgz')][0]
             dpr = requests.get(base_url + "{0}/{1}".format(version, python_link), proxies=proxies)
         else:
             Intersplunk.generateErrorResults(
@@ -32,7 +32,7 @@ def download_python(version, build_path):
     if dpr.status_code in range(200, 300):
         # save
         build_file = os.path.join(build_path, "Python-{0}.tgz".format(version))
-        with open(build_file, "w") as download:
+        with open(build_file, "wb") as download:
             download.write(dpr.content)
     else:
         Intersplunk.generateErrorResults(
@@ -81,12 +81,12 @@ def build_dist(version, download):
         os.makedirs(pyden_prefix)
     os.chdir(os.path.join(os.getcwd(), extracted_member))
     optimize_conf = simpleRequest("/servicesNS/nobody/pyden-manager/properties/pyden/appsettings/optimize",
-                                  sessionKey=session_key)[1]
+                                  sessionKey=session_key)[1].decode()
     optimize = '--enable-optimizations' if optimize_conf in ['true', 'True', '1', 1] else ''
     # remove environment variables. needed to use host libraries instead of splunk's built-in.
-    del os.environ['LD_LIBRARY_PATH']
-    del os.environ['OPENSSL_CONF']
-    del os.environ['PYTHONPATH']
+    os.environ.pop('LD_LIBRARY_PATH', None)
+    os.environ.pop('OPENSSL_CONF', None)
+    os.environ.pop('PYTHONPATH', None)
     logger.debug("Configuring source")
     configure = subprocess.Popen([os.path.join(os.curdir, 'configure'),
                                   optimize,
@@ -127,7 +127,7 @@ def build_dist(version, download):
             logger.error(message)
     if install.returncode != 0:
         sys.exit(1)
-    logger.debug("Determining binary of %s" % pyden_prefix)
+    logger.debug("Determining binary of {}".format(pyden_prefix))
     bin_dir = os.path.join(pyden_prefix, 'bin')
     os.chdir(bin_dir)
     largest_size = 0
@@ -138,7 +138,7 @@ def build_dist(version, download):
         if bin_size > largest_size:
             py_exec = os.path.join(bin_dir, binary)
             largest_size = bin_size
-    logger.debug("Found binary: %s" % py_exec)
+    logger.debug("Found binary: {}".format(py_exec))
 
     # Running get-pip and others
     logger.debug("Upgrading pip")
@@ -162,7 +162,7 @@ def build_dist(version, download):
     for message in error.split('\n'):
         if message:
             logger.error(message)
-    logger.info("Finished building Python %s. Distribution available at %s." % (version, pyden_prefix))
+    logger.info("Finished building Python {}. Distribution available at {}.".format(version, pyden_prefix))
 
     # reloading config at last second to avoid race conditions during parallel processing
     pm_config, config = load_pyden_config()
@@ -197,12 +197,12 @@ if __name__ == "__main__":
                           sessionKey=session_key)
         dist_version = json.loads(r[1])['results'][0]['version']
     except Exception as e:
-        Intersplunk.generateErrorResults("Failed to find latest version of Python: %s." % e)
+        Intersplunk.generateErrorResults("Failed to find latest version of Python: {}.".format(e))
         sys.exit(1)
     for arg in sys.argv:
         if "version" in arg:
             dist_version = arg.split("=")[1]
         if "download" in arg:
             download_arg = arg.split("=")[1]
-    logger.info("Creating Python distribution version %s" % dist_version)
+    logger.info("Creating Python distribution version {}".format(dist_version))
     build_dist(dist_version, download_arg)
