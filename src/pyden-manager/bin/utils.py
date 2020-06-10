@@ -57,7 +57,8 @@ def get_proxies(session_key):
         raise Exception("Could not get %s credentials from splunk. Error: %s" % (myapp, str(e)))
 
     for i, c in entities.items():
-        user, password = c['username'], c['clear_password']
+        if 'pyden' in i:
+            user, password = c['username'], c['clear_password']
 
     auth = "%s:%s@" % (user, password) if user else ""
     proxy = load_pyden_config()[0].get('appsettings', 'proxy')

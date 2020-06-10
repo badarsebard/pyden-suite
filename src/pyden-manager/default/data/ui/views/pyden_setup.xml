@@ -1,0 +1,9 @@
+<dashboard isDashboard="false" script="pyden_setup.js" stylesheet="pyden_setup.css">
+    <row>
+        <panel>
+            <html>
+                <div id="main_container"></div>
+            </html>
+        </panel>
+    </row>
+</dashboard>

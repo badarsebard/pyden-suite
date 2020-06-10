@@ -12,3 +12,7 @@ python-logo.xcf
 !/artifacts/**/
 !/artifacts/**/.gitkeep
 __pycache__
+pyden.html
+pyden.tgz
+pyden-manager.html
+pyden-manager.tgz
