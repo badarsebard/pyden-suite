@@ -34,7 +34,10 @@ tee -a /opt/splunk/etc/apps/pyden-manager/local/pyden.conf << 'EOF'
 [appsettings]
 EOF
 
-sed -i "/[general]/c\[general]\npython.version = ${SPLUNK_PY_VERSION}" /opt/splunk/etc/system/local/server.conf
+if [[ "${SPLUNK_VERSION}" == "8.0"* ]]
+then
+  sed -i "/[general]/c\[general]\npython.version = ${SPLUNK_PY_VERSION}" /opt/splunk/etc/system/local/server.conf
+fi
 
 tee -a /opt/splunk/etc/log-local.cfg << 'EOF'
 [python]

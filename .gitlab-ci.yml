@@ -4,14 +4,31 @@ stages:
   - package
   - deploy
 
-build_pyden_splunk:
+build_pyden_splunk_7.3:
   stage: build
   image: docker
   services:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest -f splunk.dockerfile .
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:7.3 --build-arg TAG=7.3-debian -f splunk.dockerfile .
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+  only:
+    changes:
+      - scripts/splunk_docker_prep.sh
+      - scripts/splunk_local_config.sh
+      - splunk.dockerfile
+  tags:
+    - docker
+
+build_pyden_splunk_8.0:
+  stage: build
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:8.0 --build-arg TAG=8.0-debian -f splunk.dockerfile .
     - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
   only:
     changes:
@@ -34,46 +51,6 @@ build_pyden_selenium:
     changes:
       - scripts/selenium_docker_prep.sh
       - selenium.dockerfile
-  tags:
-    - docker
-
-execute_test_suite_python2:
-  stage: test
-  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
-  services:
-    - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
-      alias: pyden-splunk
-  variables:
-    SPLUNK_PASSWORD: "changeme1"
-    SPLUNK_START_ARGS: "--accept-license"
-    SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
-    SPLUNK_ANSIBLE_ENV: "SPLUNK_PY_VERSION=python2"
-  script:
-    - python3 $CI_PROJECT_DIR/test/auto.py
-  artifacts:
-    when: on_failure
-    paths:
-      - artifacts/
-  tags:
-    - docker
-
-execute_test_suite_python3:
-  stage: test
-  image: $CI_REGISTRY/badarsebard/pyden-suite/pyden-selenium:latest
-  services:
-    - name: $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
-      alias: pyden-splunk
-  variables:
-    SPLUNK_PASSWORD: "changeme1"
-    SPLUNK_START_ARGS: "--accept-license"
-    SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
-    SPLUNK_ANSIBLE_ENV: "SPLUNK_PY_VERSION=python3"
-  script:
-    - python3 $CI_PROJECT_DIR/test/auto.py
-  artifacts:
-    when: on_failure
-    paths:
-      - artifacts/
   tags:
     - docker
 
@@ -109,7 +86,7 @@ splunkbase:
   stage: deploy
   image: pyhton
   variables:
-    SUPPORTED_VERSIONS: "7.2,7.3"
+    SUPPORTED_VERSIONS: "7.2,7.3,8.0"
   script:
     - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4322/new_release/ -F "files[]=@pyden.tgz" -F "filename=pyden.tgz" -F "splunk_versions=${SUPPORTED_VERSIONS}" -F "visibility=true"
     - curl -u ${SPLUNK_CREDS} --request POST https://splunkbase.splunk.com/api/v1/app/4323/new_release/ -F "files[]=@pyden-manager.tgz" -F "filename=pyden-manager.tgz" -F "splunk_versions=${SUPPORTED_VERSIONS}" -F "visibility=true"
@@ -117,3 +94,6 @@ splunkbase:
     - tags
   tags:
     - docker
+
+include:
+  - local: "/test/tests.yml"

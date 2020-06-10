@@ -1,4 +1,5 @@
-FROM splunk/splunk:8.0-debian
+ARG TAG=8.0-debian
+FROM splunk/splunk:${TAG}
 
 COPY scripts/splunk_docker_prep.sh ./splunk_docker_prep.sh
 RUN ./splunk_docker_prep.sh

@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: splunk.dockerfile
+      args:
+        TAG: "8.0-debian"
     image: pyden-splunk
     container_name: pyden-splunk-1
     ports:
@@ -13,7 +15,7 @@ services:
       SPLUNK_PASSWORD: "changeme1"
       SPLUNK_ANSIBLE_POST_TASKS: "file:///tmp/splunk_ansible_prep.yml"
       SPLUNK_ANSIBLE_ENV: "${SPLUNK_ANSIBLE_ENV}"
-      SPLUNK_SERVICE_UID: 1000
+      SPLUNK_VERSION: "8.0-debian"
     volumes:
       - ./src/pyden-manager:/opt/splunk/etc/apps/pyden-manager
       - /opt/splunk/etc/apps/pyden-manager/local/
