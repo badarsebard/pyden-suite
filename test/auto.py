@@ -23,6 +23,9 @@ if not ci:
             sys.exit(1)
         i += 1
         time.sleep(1)
+else:
+    # TODO: figure out better service health checking system than a raw wait
+    time.sleep(120)
 
 print("Beginning automated tests")
 os.chdir(os.environ['CI_PROJECT_DIR'])
