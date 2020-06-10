@@ -12,7 +12,7 @@ build_pyden_splunk_7.3:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:7.3 --build-arg TAG=7.3-debian -f splunk.dockerfile .
-    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:7.3
   only:
     changes:
       - scripts/splunk_docker_prep.sh
@@ -29,7 +29,7 @@ build_pyden_splunk_8.0:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:8.0 --build-arg TAG=8.0-debian -f splunk.dockerfile .
-    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:latest
+    - docker push $CI_REGISTRY/badarsebard/pyden-suite/pyden-splunk:8.0
   only:
     changes:
       - scripts/splunk_docker_prep.sh
