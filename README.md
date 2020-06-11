@@ -30,7 +30,7 @@ In all of these scenarios, PyDen Mnagaer must be installed to the same host as P
 If there is a need to utilize the virtual environments for scripts that are dispatched to the indexer layer, PyDen will also need to be deployed to any indexer that may need it. There is currently no specific recommendation on how to accomplish this as there are separate management servers for search head and indexer clusters. 
 
 # Compatibility
-The PyDen suite of apps has been tested for compatibility with Splunk 7.2. Use with other version of Splunk are considered experimental and should be tested thoroughly. 
+The PyDen suite of apps has been tested for compatibility with Splunk 7.2, 7.3, AND 8.0.
 
 # Requirements
 The app builds CPython from source and therefore the success of the build is highly dependent on the operating system libraries available. The host OS must have a compiler and the packages needed in order to build Python from source. Please refer to the documentation for your OS for needed packages. Two options are included in the ./configure command during the Python build process: `--enable-optimizations` (if configured) and `--with-ensurepip=install`.
