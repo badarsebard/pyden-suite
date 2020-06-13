@@ -179,7 +179,7 @@ appinspect:
 #######################
 splunkbase:
   stage: deploy
-  image: pyhton
+  image: python
   variables:
     SUPPORTED_VERSIONS: "7.2,7.3,8.0"
   script:

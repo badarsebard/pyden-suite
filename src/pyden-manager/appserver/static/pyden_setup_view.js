@@ -579,7 +579,7 @@ define(
                     "            </br>" +
                     "            <div class='user_input'>" +
                     "                <div class='text'>" +
-                    "                    <input type='text' name='location' id='location' placeholder='/opt/splunk/etc/apps/pyden' />" +
+                    "                    <input type='text' name='location' id='location' value='/opt/splunk/etc/apps/pyden' />" +
                     "                </div>" +
                     "            </div>" +
                     "        </div>" +
