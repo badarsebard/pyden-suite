@@ -1,9 +1,5 @@
-# use this to activate default environment
-# import activate_default
-
-# or if you require a different environment from the default, use this
-from activate import activate_venv_or_die
-activate_venv_or_die('py3')
+# use this to activate the virtual environment associated with the custom command
+import activate
 
 import sys
 import os
@@ -15,12 +11,14 @@ if sys.version < '3':
 else:
     from urllib.parse import unquote
 
+all_in = []
 input_buf = sys.stdin
 results = []
 settings = {}
 attr = last_attr = None
 while True:
     line = input_buf.readline()
+    all_in.append(line)
     line = line[:-1]
     if len(line) == 0:
         break
@@ -60,6 +58,10 @@ for result in results:
         result["foundSDK"] = "false"
     else:
         result["foundSDK"] = "true"
+    result['stdin'] = all_in
+    result['file'] = str(__file__)
+    result['argv'] = sys.argv
+
 
 outputfile = sys.stdout
 s = set()
