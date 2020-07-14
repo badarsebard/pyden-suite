@@ -88,9 +88,6 @@ execute_test_suite_7.3_python2:
       - artifacts/
   tags:
     - docker
-  needs:
-    - build_pyden_splunk_7.3
-    - build_pyden_selenium
 
 execute_test_suite_8.0_python2:
   stage: test
@@ -116,9 +113,6 @@ execute_test_suite_8.0_python2:
       - artifacts/
   tags:
     - docker
-  needs:
-    - build_pyden_splunk_8.0
-    - build_pyden_selenium
 
 execute_test_suite_8.0_python3:
   stage: test
@@ -144,9 +138,6 @@ execute_test_suite_8.0_python3:
       - artifacts/
   tags:
     - docker
-  needs:
-    - build_pyden_splunk_8.0
-    - build_pyden_selenium
 
 #######################
 #
@@ -188,7 +179,7 @@ appinspect:
 #######################
 splunkbase:
   stage: deploy
-  image: pyhton
+  image: python
   variables:
     SUPPORTED_VERSIONS: "7.2,7.3,8.0"
   script:
