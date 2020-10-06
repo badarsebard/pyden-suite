@@ -29,6 +29,6 @@ else:
 
 print("Beginning automated tests")
 os.chdir(os.environ['CI_PROJECT_DIR'])
-code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test")])
+code = pytest.main([os.path.join(os.environ['CI_PROJECT_DIR'], "test"), "--html=artifacts/report.html"])
 
 sys.exit(code)

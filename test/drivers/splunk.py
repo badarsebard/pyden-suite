@@ -1,10 +1,12 @@
 import os
+from pytest_html import extras
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 import time
+from typing import Callable
 
 
 def wait_until(browser: webdriver.Chrome, url: str):
@@ -13,6 +15,21 @@ def wait_until(browser: webdriver.Chrome, url: str):
 
 class TestFailure(Exception):
     pass
+
+
+def report_screenshot(func: Callable):
+    def wrapper(browser: webdriver.Chrome, extra: list, *args):
+        try:
+            if doc := func.__doc__:
+                extra.append(extras.html(f"<p>{doc}<p>"))
+            return func(browser, extra, *args)
+        except AssertionError as e:
+            img = browser.get_screenshot_as_base64()
+            extra.append(extras.png(img))
+            raise e
+        except Exception as e:
+            raise e
+    return wrapper
 
 
 def _screenshot(func):
@@ -34,6 +51,7 @@ class SplunkTest:
                                      f"{self.pic_name}-{self.count}.png")
         self.browser.save_screenshot(full_pic_name)
         self.count += 1
+        return full_pic_name
 
     def open_pyden(self, url):
         self.browser.get(f"http://pyden-splunk:8000/en-US/app/pyden-manager/{url}")
@@ -71,8 +89,4 @@ class SplunkTest:
         stop_button = self.browser.find_element_by_class_name("stop")
         while "disabled" not in stop_button.get_attribute("class"):
             time.sleep(1)
-        results_location = os.path.join(os.environ['CI_PROJECT_DIR'], "artifacts", "results",
-                                        f"{self.pic_name}-{self.count}.txt")
-        with open(results_location, "w") as f:
-            f.write(self.browser.page_source)
         return self.browser.page_source

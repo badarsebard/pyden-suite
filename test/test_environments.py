@@ -1,10 +1,12 @@
-from .drivers import splunk
+from .drivers.splunk import SplunkTest, report_screenshot
 from selenium.webdriver.common.keys import Keys
 import time
 
 
-def test_create_venv_success(browser):
-    splunk_test = splunk.SplunkTest(browser, "create_venv_success")
+@report_screenshot
+def test_create_venv_success(browser, extra):
+    """MTSPD-1"""
+    splunk_test = SplunkTest(browser, "create_venv_success")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| createdist version=3.8.0")
     assert "Successfully compiled Python 3.8.0" in results
@@ -12,29 +14,34 @@ def test_create_venv_success(browser):
     assert "Successfully created virtual environment py-env-0 using Python 3.8.0" in results
 
 
-def test_create_venv_no_name(browser):
-    splunk_test = splunk.SplunkTest(browser, "create_venv_no_name")
+@report_screenshot
+def test_create_venv_no_name(browser, extra):
+    """MTSPD-2"""
+    splunk_test = SplunkTest(browser, "create_venv_no_name")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| createvenv version=3.8.0")
     assert "No name for the new environment was provided." in results
 
 
-def test_create_venv_name_exists(browser):
-    splunk_test = splunk.SplunkTest(browser, "create_venv_name_exists")
+@report_screenshot
+def test_create_venv_name_exists(browser, extra):
+    splunk_test = SplunkTest(browser, "create_venv_name_exists")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| createvenv name=py-env-0 version=3.8.0")
     assert "Virtual environment name py-env-0 already exists" in results
 
 
-def test_create_venv_version_not_exists(browser):
-    splunk_test = splunk.SplunkTest(browser, "create_venv_version_not_exists")
+@report_screenshot
+def test_create_venv_version_not_exists(browser, extra):
+    splunk_test = SplunkTest(browser, "create_venv_version_not_exists")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| createvenv name=py-env-1 version=4.0")
     assert "Python version not found in pyden.conf" in results
 
 
-def test_create_venv_ui_success(browser):
-    splunk_test = splunk.SplunkTest(browser, "create_venv_ui_success")
+@report_screenshot
+def test_create_venv_ui_success(browser, extra):
+    splunk_test = SplunkTest(browser, "create_venv_ui_success")
     splunk_test.open_pyden_environments()
     text_box = browser.find_element_by_xpath('//*[@id="input1"]/div/div/input')
     text_box.send_keys(Keys.CONTROL, "a")
@@ -59,8 +66,9 @@ def test_create_venv_ui_success(browser):
     assert "py-env-1" in table.text
 
 
-def test_delete_venv_ui_success(browser):
-    splunk_test = splunk.SplunkTest(browser, "delete_venv_ui_success")
+@report_screenshot
+def test_delete_venv_ui_success(browser, extra):
+    splunk_test = SplunkTest(browser, "delete_venv_ui_success")
     splunk_test.open_pyden_environments()
     rows = browser.find_elements_by_xpath('//*[@id="statistics"]/table/tbody/tr')
     button = None
@@ -86,22 +94,25 @@ def test_delete_venv_ui_success(browser):
     assert "py-env-1" not in table.text
 
 
-def test_delete_venv_success(browser):
-    splunk_test = splunk.SplunkTest(browser, "delete_venv_success")
+@report_screenshot
+def test_delete_venv_success(browser, extra):
+    splunk_test = SplunkTest(browser, "delete_venv_success")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| pydelete py-env-0")
     assert "Successfully deleted venv py-env-0" in results
 
 
-def test_delete_venv_name_not_exist(browser):
-    splunk_test = splunk.SplunkTest(browser, "delete_venv_name_not_exist")
+@report_screenshot
+def test_delete_venv_name_not_exist(browser, extra):
+    splunk_test = SplunkTest(browser, "delete_venv_name_not_exist")
     splunk_test.open_pyden_search()
     results = splunk_test.run_search("| pydelete py-env-0")
     assert "Version or environment py-env-0 not found in configuration" in results
 
 
-def test_view_venv_module_success(browser):
-    splunk_test = splunk.SplunkTest(browser, "add_venv_module_success")
+@report_screenshot
+def test_view_venv_module_success(browser, extra):
+    splunk_test = SplunkTest(browser, "add_venv_module_success")
     splunk_test.open_pyden_search()
     splunk_test.run_search("| createvenv name=py-env-2 version=3.8.0")
     splunk_test.run_search("| pip environment=py-env-2 install requests")
